@@ -43,11 +43,11 @@ const createApp = () => {
     .map((o) => o.trim())
     .filter(Boolean);
 
-  // Vercel generates a distinct URL per branch/deployment (e.g.
-  // pinnacle-git-main-<team>.vercel.app, pinnacle-<hash>-<team>.vercel.app)
-  // in addition to the stable production alias — matching them all by
-  // pattern avoids having to update CLIENT_URL for every new deployment.
-  const vercelPreviewPattern = /^https:\/\/pinnacle[\w-]*\.vercel\.app$/;
+  // Vercel generates a distinct URL per branch/deployment/project alias
+  // (e.g. pinnacle-git-main-<team>.vercel.app, pinnacle-<hash>-<team>.vercel.app,
+  // or an entirely renamed project) — allow any *.vercel.app origin so this
+  // never needs updating again as deployments change.
+  const vercelPreviewPattern = /^https:\/\/[\w-]+\.vercel\.app$/;
 
   app.use(
     cors({

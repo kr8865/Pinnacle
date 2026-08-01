@@ -1,12 +1,16 @@
 const { body, param } = require('express-validator');
 
+// Only email + password are required for now — every other admission field is
+// optional so registration can't be blocked by incomplete profile data. The
+// admin can follow up with the student to complete their profile before
+// approving admission.
 const registerValidator = [
-  body('studentName').trim().notEmpty().withMessage('Student name is required'),
-  body('fatherName').trim().notEmpty().withMessage("Father's name is required"),
+  body('studentName').optional({ checkFalsy: true }).trim(),
+  body('fatherName').optional({ checkFalsy: true }).trim(),
   body('motherName').optional({ checkFalsy: true }).trim(),
   body('email').trim().isEmail().withMessage('Valid email is required').normalizeEmail(),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-  body('mobile').trim().notEmpty().withMessage('Mobile number is required'),
+  body('mobile').optional({ checkFalsy: true }).trim(),
   body('parentMobile').optional({ checkFalsy: true }).trim(),
   body('address').optional({ checkFalsy: true }).trim(),
   body('city').optional({ checkFalsy: true }).trim(),
@@ -16,8 +20,8 @@ const registerValidator = [
   body('dob').optional({ checkFalsy: true }).isISO8601().withMessage('Invalid date of birth'),
   body('schoolName').optional({ checkFalsy: true }).trim(),
   body('board').optional({ checkFalsy: true }).isIn(['CBSE', 'ICSE', 'State', 'Other']).withMessage('Invalid board'),
-  body('currentClass').isIn(['10', '11', '12']).withMessage('Invalid class'),
-  body('selectedCourse').notEmpty().withMessage('Course selection is required').isMongoId().withMessage('Invalid course id'),
+  body('currentClass').optional({ checkFalsy: true }).isIn(['10', '11', '12']).withMessage('Invalid class'),
+  body('selectedCourse').optional({ checkFalsy: true }).isMongoId().withMessage('Invalid course id'),
   body('aadharNumber').optional({ checkFalsy: true }).trim(),
   body('bloodGroup').optional({ checkFalsy: true }).trim(),
   body('emergencyContact').optional({ checkFalsy: true }).trim(),
@@ -25,8 +29,6 @@ const registerValidator = [
   body('tenthPercentage').optional({ checkFalsy: true }).isFloat({ min: 0, max: 100 }).withMessage('Invalid 10th percentage'),
   body('twelfthPercentage').optional({ checkFalsy: true }).isFloat({ min: 0, max: 100 }).withMessage('Invalid 12th percentage'),
   body('medicalInfo').optional({ checkFalsy: true }).trim(),
-  // termsAccepted is intentionally not required here — it's stored as informational
-  // consent on the Student record (see auth.controller.js#register), not gated on.
   body('termsAccepted').optional(),
 ];
 

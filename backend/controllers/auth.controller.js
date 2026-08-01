@@ -77,13 +77,23 @@ const register = catchAsync(async (req, res) => {
   const existingUser = await User.findOne({ email: email.toLowerCase() });
   if (existingUser) throw ApiError.conflict('An account with this email already exists');
 
-  const course = await Course.findById(selectedCourse);
-  if (!course) throw ApiError.badRequest('Selected course does not exist');
+  // Course selection is optional for now — only look it up if one was actually
+  // provided, and don't hard-fail registration if it's missing/invalid.
+  let course = null;
+  if (selectedCourse) {
+    course = await Course.findById(selectedCourse).catch(() => null);
+  }
 
   let user;
   let student;
   try {
-    user = await User.create({ name: studentName, email, password, role: 'student', phone: mobile });
+    user = await User.create({
+      name: studentName || email.split('@')[0],
+      email,
+      password,
+      role: 'student',
+      phone: mobile,
+    });
 
     const registrationNumber = await generateSequentialCode(Student, 'registrationNumber', 'PTC-REG');
 
@@ -97,12 +107,12 @@ const register = catchAsync(async (req, res) => {
       city,
       state,
       pincode,
-      gender,
+      gender: gender || undefined,
       dob: dob || undefined,
       schoolName,
-      board,
-      currentClass,
-      course: course._id,
+      board: board || undefined,
+      currentClass: currentClass || undefined,
+      course: course?._id,
       aadharNumber,
       bloodGroup,
       emergencyContact,

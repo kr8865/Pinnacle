@@ -25,9 +25,9 @@ const fieldsByStep = [
 ];
 
 const fileFields = [
-  { name: 'photo', label: 'Passport Size Photo', accept: 'image/*', required: true, hint: 'JPG/PNG, max 10MB' },
+  { name: 'photo', label: 'Passport Size Photo', accept: 'image/*', required: false, hint: 'JPG/PNG, max 10MB' },
   { name: 'signature', label: 'Signature', accept: 'image/*', required: false, hint: 'JPG/PNG, max 10MB' },
-  { name: 'idProof', label: 'ID Proof (Aadhar/Birth Certificate)', accept: 'image/*,.pdf', required: true, hint: 'JPG/PNG/PDF, max 10MB' },
+  { name: 'idProof', label: 'ID Proof (Aadhar/Birth Certificate)', accept: 'image/*,.pdf', required: false, hint: 'JPG/PNG/PDF, max 10MB' },
   { name: 'parentPhoto', label: "Parent's Photo", accept: 'image/*', required: false, hint: 'JPG/PNG, max 10MB' },
   { name: 'tenthMarksheet', label: '10th Marksheet', accept: 'image/*,.pdf', required: false, hint: 'JPG/PNG/PDF, max 10MB' },
   { name: 'eleventhMarksheet', label: '11th Marksheet', accept: 'image/*,.pdf', required: false, hint: 'JPG/PNG/PDF, max 10MB' },
@@ -272,34 +272,29 @@ export default function Admission() {
                 </div>
 
                 <div>
-                  <label className="label-text">Student Name *</label>
-                  <input className="input-field" {...register('studentName', { required: 'Student name is required' })} />
-                  <FieldError error={errors.studentName} />
+                  <label className="label-text">Student Name</label>
+                  <input className="input-field" {...register('studentName')} />
                 </div>
                 <div>
-                  <label className="label-text">Father's Name *</label>
-                  <input className="input-field" {...register('fatherName', { required: "Father's name is required" })} />
-                  <FieldError error={errors.fatherName} />
+                  <label className="label-text">Father's Name</label>
+                  <input className="input-field" {...register('fatherName')} />
                 </div>
                 <div>
-                  <label className="label-text">Mother's Name *</label>
-                  <input className="input-field" {...register('motherName', { required: "Mother's name is required" })} />
-                  <FieldError error={errors.motherName} />
+                  <label className="label-text">Mother's Name</label>
+                  <input className="input-field" {...register('motherName')} />
                 </div>
                 <div>
-                  <label className="label-text">Gender *</label>
-                  <select className="input-field" {...register('gender', { required: 'Gender is required' })}>
+                  <label className="label-text">Gender</label>
+                  <select className="input-field" {...register('gender')}>
                     <option value="">Select gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="other">Other</option>
                   </select>
-                  <FieldError error={errors.gender} />
                 </div>
                 <div>
-                  <label className="label-text">Date of Birth *</label>
-                  <input type="date" className="input-field" {...register('dob', { required: 'Date of birth is required' })} />
-                  <FieldError error={errors.dob} />
+                  <label className="label-text">Date of Birth</label>
+                  <input type="date" className="input-field" {...register('dob')} />
                 </div>
                 <div>
                   <label className="label-text">Blood Group</label>
@@ -335,74 +330,36 @@ export default function Admission() {
                   <FieldError error={errors.password} />
                 </div>
                 <div>
-                  <label className="label-text">Student Mobile *</label>
-                  <input
-                    className="input-field"
-                    {...register('mobile', {
-                      required: 'Mobile number is required',
-                      pattern: { value: /^[0-9]{10}$/, message: 'Enter a valid 10-digit number' },
-                    })}
-                  />
-                  <FieldError error={errors.mobile} />
+                  <label className="label-text">Student Mobile</label>
+                  <input className="input-field" {...register('mobile')} />
                 </div>
                 <div>
-                  <label className="label-text">Parent Mobile *</label>
-                  <input
-                    className="input-field"
-                    {...register('parentMobile', {
-                      required: 'Parent mobile number is required',
-                      pattern: { value: /^[0-9]{10}$/, message: 'Enter a valid 10-digit number' },
-                    })}
-                  />
-                  <FieldError error={errors.parentMobile} />
+                  <label className="label-text">Parent Mobile</label>
+                  <input className="input-field" {...register('parentMobile')} />
                 </div>
                 <div>
-                  <label className="label-text">Emergency Contact *</label>
-                  <input
-                    className="input-field"
-                    {...register('emergencyContact', {
-                      required: 'Emergency contact is required',
-                      pattern: { value: /^[0-9]{10}$/, message: 'Enter a valid 10-digit number' },
-                    })}
-                  />
-                  <FieldError error={errors.emergencyContact} />
+                  <label className="label-text">Emergency Contact</label>
+                  <input className="input-field" {...register('emergencyContact')} />
                 </div>
                 <div>
-                  <label className="label-text">Aadhar Number *</label>
-                  <input
-                    className="input-field"
-                    {...register('aadharNumber', {
-                      required: 'Aadhar number is required',
-                      pattern: { value: /^[0-9]{12}$/, message: 'Enter a valid 12-digit Aadhar number' },
-                    })}
-                  />
-                  <FieldError error={errors.aadharNumber} />
+                  <label className="label-text">Aadhar Number</label>
+                  <input className="input-field" {...register('aadharNumber')} />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="label-text">Address *</label>
-                  <input className="input-field" {...register('address', { required: 'Address is required' })} />
-                  <FieldError error={errors.address} />
+                  <label className="label-text">Address</label>
+                  <input className="input-field" {...register('address')} />
                 </div>
                 <div>
-                  <label className="label-text">City *</label>
-                  <input className="input-field" {...register('city', { required: 'City is required' })} />
-                  <FieldError error={errors.city} />
+                  <label className="label-text">City</label>
+                  <input className="input-field" {...register('city')} />
                 </div>
                 <div>
-                  <label className="label-text">State *</label>
-                  <input className="input-field" {...register('state', { required: 'State is required' })} />
-                  <FieldError error={errors.state} />
+                  <label className="label-text">State</label>
+                  <input className="input-field" {...register('state')} />
                 </div>
                 <div>
-                  <label className="label-text">Pincode *</label>
-                  <input
-                    className="input-field"
-                    {...register('pincode', {
-                      required: 'Pincode is required',
-                      pattern: { value: /^[0-9]{6}$/, message: 'Enter a valid 6-digit pincode' },
-                    })}
-                  />
-                  <FieldError error={errors.pincode} />
+                  <label className="label-text">Pincode</label>
+                  <input className="input-field" {...register('pincode')} />
                 </div>
               </motion.div>
             )}
@@ -422,34 +379,31 @@ export default function Admission() {
                 </div>
 
                 <div>
-                  <label className="label-text">Current/Previous School *</label>
-                  <input className="input-field" {...register('schoolName', { required: 'School name is required' })} />
-                  <FieldError error={errors.schoolName} />
+                  <label className="label-text">Current/Previous School</label>
+                  <input className="input-field" {...register('schoolName')} />
                 </div>
                 <div>
                   <label className="label-text">Previous School (if changed)</label>
                   <input className="input-field" {...register('previousSchool')} />
                 </div>
                 <div>
-                  <label className="label-text">Board *</label>
-                  <select className="input-field" {...register('board', { required: 'Board is required' })}>
+                  <label className="label-text">Board</label>
+                  <select className="input-field" {...register('board')}>
                     <option value="">Select board</option>
                     <option value="CBSE">CBSE</option>
                     <option value="ICSE">ICSE</option>
                     <option value="State Board">State Board</option>
                     <option value="Other">Other</option>
                   </select>
-                  <FieldError error={errors.board} />
                 </div>
                 <div>
-                  <label className="label-text">Applying for Class *</label>
-                  <select className="input-field" {...register('currentClass', { required: 'Class is required' })}>
+                  <label className="label-text">Applying for Class</label>
+                  <select className="input-field" {...register('currentClass')}>
                     <option value="">Select class</option>
                     <option value="10">Class 10</option>
                     <option value="11">Class 11</option>
                     <option value="12">Class 12</option>
                   </select>
-                  <FieldError error={errors.currentClass} />
                 </div>
                 <div>
                   <label className="label-text">10th Percentage</label>
@@ -503,20 +457,19 @@ export default function Admission() {
                   <h2 className="font-display text-lg font-bold">Course Selection</h2>
                 </div>
                 <div>
-                  <label className="label-text">Select Course *</label>
+                  <label className="label-text">Select Course</label>
                   <select
                     className="input-field"
                     disabled={coursesLoading}
-                    {...register('selectedCourse', { required: 'Please select a course' })}
+                    {...register('selectedCourse')}
                   >
-                    <option value="">{coursesLoading ? 'Loading courses...' : 'Select a course'}</option>
+                    <option value="">{coursesLoading ? 'Loading courses...' : 'Select a course (optional)'}</option>
                     {courses.map((c) => (
                       <option key={c._id || c.id} value={c._id || c.id}>
                         {(c.name || c.subject)} {c.classLevel ? `— Class ${c.classLevel}` : ''}
                       </option>
                     ))}
                   </select>
-                  <FieldError error={errors.selectedCourse} />
                 </div>
 
                 <div className="mb-1 mt-2 flex items-center gap-2 text-brand-600 dark:text-brand-300">

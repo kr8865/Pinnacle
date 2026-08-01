@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const studentSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
-    fatherName: { type: String, required: true, trim: true },
+    fatherName: { type: String, trim: true },
     motherName: { type: String, trim: true },
-    mobile: { type: String, required: true, trim: true },
+    mobile: { type: String, trim: true },
     parentMobile: { type: String, trim: true },
     address: { type: String, trim: true },
     city: { type: String, trim: true, index: true },
@@ -15,7 +15,7 @@ const studentSchema = new mongoose.Schema(
     dob: { type: Date },
     schoolName: { type: String, trim: true },
     board: { type: String, enum: ['CBSE', 'ICSE', 'State', 'Other'] },
-    currentClass: { type: String, enum: ['10', '11', '12'], required: true, index: true },
+    currentClass: { type: String, enum: ['10', '11', '12'], index: true },
     course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', index: true },
     aadharNumber: { type: String, trim: true },
     bloodGroup: { type: String, trim: true },
