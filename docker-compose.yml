@@ -1,31 +1,14 @@
-version: "3.9"
-
 services:
-  mongo:
-    image: mongo:7
-    restart: unless-stopped
-    volumes:
-      - mongo_data:/data/db
-    ports:
-      - "27017:27017"
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
     restart: unless-stopped
-    depends_on:
-      mongo:
-        condition: service_healthy
     env_file:
       - backend/.env
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/pinnacle_tuition
+    # MONGO_URI comes from backend/.env (your existing Atlas cluster) —
+    # intentionally NOT overridden here, so seeded data (admin/courses/students)
+    # is available immediately instead of starting from an empty local database.
     ports:
       - "5000:5000"
     volumes:
@@ -45,5 +28,4 @@ services:
       - "80:80"
 
 volumes:
-  mongo_data:
   backend_uploads:
