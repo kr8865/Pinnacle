@@ -27,6 +27,17 @@ export function PublicNavbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Lock page scroll while the mobile drawer is open, and always release it
+  // on close/unmount — mirrors the fix in components/Sidebar.jsx.
+  useEffect(() => {
+    if (!open) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
   return (
     <header
       className={`sticky top-0 z-40 transition-all duration-300 ${
@@ -80,57 +91,67 @@ export function PublicNavbar() {
         </div>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
-              onClick={() => setOpen(false)}
-            />
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-              className="fixed inset-y-0 right-0 z-50 flex w-72 flex-col gap-1 bg-surface-card p-5 shadow-softLg dark:bg-surface-darkCard lg:hidden"
-            >
-              <div className="mb-4 flex items-center justify-between">
-                <span className="font-display text-lg font-bold">Menu</span>
-                <button type="button" className="btn-ghost" onClick={() => setOpen(false)}>
-                  <FiX className="h-5 w-5" />
-                </button>
-              </div>
-              {publicLinks.map((l) => (
-                <NavLink
-                  key={l.to}
-                  to={l.to}
-                  onClick={() => setOpen(false)}
-                  className={({ isActive }) =>
-                    `rounded-2xl px-4 py-2.5 text-sm font-medium ${
-                      isActive
-                        ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300'
-                        : 'text-ink-muted dark:text-ink-lightMuted'
-                    }`
-                  }
-                >
-                  {l.label}
-                </NavLink>
-              ))}
-              <div className="mt-4 flex flex-col gap-2 border-t border-surface-border pt-4 dark:border-surface-darkBorder">
-                <Link to="/student-login" className="btn-secondary w-full" onClick={() => setOpen(false)}>
-                  Login
-                </Link>
-                <Link to="/admission" className="btn-primary w-full" onClick={() => setOpen(false)}>
-                  Apply Now
-                </Link>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {/*
+        Mobile drawer — always mounted (never conditionally rendered) and
+        purely CSS-driven via `open`. Deliberately NOT using AnimatePresence's
+        mount/unmount + exit-animation lifecycle here: that pattern can get
+        out of sync when the drawer is opened and closed repeatedly in quick
+        succession, leaving it stuck open with the close button/backdrop no
+        longer responding. Keeping the nodes permanently in the DOM and just
+        toggling classes means every open/close is a plain, independent
+        state flip with nothing to get out of sync. (Same fix as
+        components/Sidebar.jsx.)
+      */}
+      <div
+        onClick={() => setOpen(false)}
+        aria-hidden={!open}
+        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-200 lg:hidden ${
+          open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+      />
+      <div
+        aria-hidden={!open}
+        className={`fixed inset-y-0 right-0 z-50 flex w-72 flex-col gap-1 bg-surface-card p-5 shadow-softLg transition-transform duration-300 ease-out dark:bg-surface-darkCard lg:hidden ${
+          open ? 'translate-x-0 pointer-events-auto' : 'translate-x-full pointer-events-none'
+        }`}
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <span className="font-display text-lg font-bold">Menu</span>
+          <button
+            type="button"
+            className="btn-ghost touch-manipulation"
+            style={{ touchAction: 'manipulation' }}
+            onClick={() => setOpen(false)}
+            aria-label="Close menu"
+          >
+            <FiX className="h-5 w-5" />
+          </button>
+        </div>
+        {publicLinks.map((l) => (
+          <NavLink
+            key={l.to}
+            to={l.to}
+            onClick={() => setOpen(false)}
+            className={({ isActive }) =>
+              `rounded-2xl px-4 py-2.5 text-sm font-medium ${
+                isActive
+                  ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300'
+                  : 'text-ink-muted dark:text-ink-lightMuted'
+              }`
+            }
+          >
+            {l.label}
+          </NavLink>
+        ))}
+        <div className="mt-4 flex flex-col gap-2 border-t border-surface-border pt-4 dark:border-surface-darkBorder">
+          <Link to="/student-login" className="btn-secondary w-full" onClick={() => setOpen(false)}>
+            Login
+          </Link>
+          <Link to="/admission" className="btn-primary w-full" onClick={() => setOpen(false)}>
+            Apply Now
+          </Link>
+        </div>
+      </div>
     </header>
   );
 }
