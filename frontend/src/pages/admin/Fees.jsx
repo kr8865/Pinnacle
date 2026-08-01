@@ -491,7 +491,7 @@ export default function Fees() {
                 <option key={s} value={s}>{s}</option>
               ))}
             </select>
-            <div className="w-56">
+            <div className="w-full sm:w-56">
               <StudentAutocomplete
                 selected={studentFilter}
                 onSelect={(s) => {
@@ -573,7 +573,7 @@ export default function Fees() {
             <StudentAutocomplete selected={modalStudent} onSelect={setModalStudent} />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="label-text">Amount (₹)</label>
               <input
@@ -596,7 +596,7 @@ export default function Fees() {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
               <label className="label-text">Installments</label>
               <input

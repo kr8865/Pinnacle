@@ -69,18 +69,24 @@ export default function Sidebar({ items, brand, footer, mobileOpen, onMobileClos
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={onMobileClose}
-              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
+              className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm lg:hidden"
             />
             <motion.aside
               initial={{ x: -280, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -280, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-              className="fixed inset-y-4 left-4 z-50 flex w-64 flex-col gap-6 rounded-3xl border border-surface-border bg-surface-card p-5 shadow-softLg dark:border-surface-darkBorder dark:bg-surface-darkCard lg:hidden"
+              className="fixed inset-y-4 left-4 right-4 z-[70] flex w-auto max-w-xs flex-col gap-6 rounded-3xl border border-surface-border bg-surface-card p-5 shadow-softLg dark:border-surface-darkBorder dark:bg-surface-darkCard sm:right-auto sm:w-64 lg:hidden"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 {brand}
-                <button type="button" onClick={onMobileClose} className="btn-ghost">
+                <button
+                  type="button"
+                  onClick={onMobileClose}
+                  aria-label="Close menu"
+                  className="btn-ghost !h-11 !w-11 shrink-0 touch-manipulation"
+                  style={{ touchAction: 'manipulation' }}
+                >
                   <FiX className="h-5 w-5" />
                 </button>
               </div>

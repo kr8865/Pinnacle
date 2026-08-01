@@ -334,8 +334,8 @@ export default function Tests() {
           ) : leaderboardData.length ? (
             <div className="divide-y divide-surface-border dark:divide-surface-darkBorder">
               {leaderboardData.map((row, i) => (
-                <div key={row._id || row.student?._id || i} className="flex items-center justify-between py-2.5 text-sm">
-                  <span className="font-semibold text-ink dark:text-ink-light">#{row.rank ?? i + 1} {row.student?.name || row.name || 'Student'}</span>
+                <div key={row.studentId || row.student || i} className="flex items-center justify-between py-2.5 text-sm">
+                  <span className="font-semibold text-ink dark:text-ink-light">#{row.rank ?? i + 1} {row.student || 'Student'}</span>
                   <span className="text-ink-muted dark:text-ink-lightMuted">{row.score ?? 0} pts · {Number(row.percentage ?? 0).toFixed(1)}%</span>
                 </div>
               ))}

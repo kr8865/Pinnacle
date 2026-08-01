@@ -81,6 +81,13 @@ export default function Students() {
   const [confirmAction, setConfirmAction] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
 
+  // Course/class weren't required at registration, so admins need a way to
+  // assign them after the fact — without a course, a student can never be
+  // added to an attendance/test roster (both are filtered by course).
+  const [assignCourse, setAssignCourse] = useState('');
+  const [assignClass, setAssignClass] = useState('');
+  const [assignSaving, setAssignSaving] = useState(false);
+
   const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
   const [bulkFile, setBulkFile] = useState(null);
   const [bulkLoading, setBulkLoading] = useState(false);
@@ -134,6 +141,27 @@ export default function Students() {
     setDetailTab('profile');
     setDocuments([]);
     setIdCard(null);
+    setAssignCourse(student?.course?._id || student?.course || '');
+    setAssignClass(student?.currentClass || '');
+  };
+
+  const handleAssignCourseClass = async () => {
+    if (!detail) return;
+    setAssignSaving(true);
+    try {
+      const res = await studentsService.update(detail._id, {
+        course: assignCourse || undefined,
+        currentClass: assignClass || undefined,
+      });
+      const updated = res?.data?.data;
+      if (updated) setDetail(updated);
+      toast.success('Course & class updated');
+      loadStudents();
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Failed to update course/class');
+    } finally {
+      setAssignSaving(false);
+    }
   };
 
   useEffect(() => {
@@ -542,13 +570,46 @@ export default function Students() {
                   <DetailField label="School" value={detail.schoolName} />
                   <DetailField label="Previous School" value={detail.previousSchool} />
                   <DetailField label="Board" value={detail.board} />
-                  <DetailField label="Class" value={detail.currentClass ? `Class ${detail.currentClass}` : null} />
-                  <DetailField label="Course" value={detail.course?.name} />
                   <DetailField label="10th %" value={detail.tenthPercentage} />
                   <DetailField label="12th %" value={detail.twelfthPercentage} />
                   <DetailField label="Aadhar Number" value={detail.aadharNumber} />
                   <DetailField label="Blood Group" value={detail.bloodGroup} />
                   <DetailField label="Medical Info" value={detail.medicalInfo} />
+                </div>
+
+                <div className="rounded-2xl border border-surface-border p-4 dark:border-surface-darkBorder">
+                  <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-ink-lightMuted">
+                    Class & Course
+                  </p>
+                  {!detail.course && (
+                    <p className="mb-3 text-xs text-warning">
+                      No course assigned yet — this student won't appear in any attendance or test roster until one is set.
+                    </p>
+                  )}
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <select value={assignClass} onChange={(e) => setAssignClass(e.target.value)} className={selectClass}>
+                      <option value="">Select class</option>
+                      {CLASS_OPTIONS.map((c) => (
+                        <option key={c} value={c}>Class {c}</option>
+                      ))}
+                    </select>
+                    <select value={assignCourse} onChange={(e) => setAssignCourse(e.target.value)} className={selectClass}>
+                      <option value="">Select course</option>
+                      {courses.map((c) => (
+                        <option key={c._id} value={c._id}>
+                          {c.name} {c.classLevel ? `— Class ${c.classLevel}` : ''}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      disabled={assignSaving}
+                      onClick={handleAssignCourseClass}
+                    >
+                      {assignSaving ? 'Saving...' : 'Save'}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2 border-t border-surface-border pt-4 dark:border-surface-darkBorder">

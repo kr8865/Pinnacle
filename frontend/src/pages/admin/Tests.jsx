@@ -293,7 +293,7 @@ function TestFormModal({ open, onClose, onSaved, test, courses }) {
 
           {questions.map((q, qIdx) => (
             <div key={qIdx} className="space-y-3 rounded-2xl border border-surface-border p-4 dark:border-surface-darkBorder">
-              <div className="flex items-start gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
                 <div className="flex-1">
                   <label className="label-text">Question {qIdx + 1}</label>
                   <textarea
@@ -303,26 +303,28 @@ function TestFormModal({ open, onClose, onSaved, test, courses }) {
                     placeholder="Enter question text"
                   />
                 </div>
-                <div className="w-24">
-                  <label className="label-text">Marks</label>
-                  <input
-                    type="number"
-                    min={0}
-                    className="input-field"
-                    value={q.marks}
-                    onChange={(e) => updateQuestion(qIdx, { marks: e.target.value })}
-                  />
+                <div className="flex items-end gap-2 sm:items-start">
+                  <div className="w-full sm:w-24">
+                    <label className="label-text">Marks</label>
+                    <input
+                      type="number"
+                      min={0}
+                      className="input-field"
+                      value={q.marks}
+                      onChange={(e) => updateQuestion(qIdx, { marks: e.target.value })}
+                    />
+                  </div>
+                  {questions.length > 1 && (
+                    <button
+                      type="button"
+                      className="btn-ghost shrink-0 text-danger sm:mt-6"
+                      onClick={() => removeQuestion(qIdx)}
+                      aria-label="Remove question"
+                    >
+                      <FiTrash2 className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
-                {questions.length > 1 && (
-                  <button
-                    type="button"
-                    className="btn-ghost mt-6 text-danger"
-                    onClick={() => removeQuestion(qIdx)}
-                    aria-label="Remove question"
-                  >
-                    <FiTrash2 className="h-4 w-4" />
-                  </button>
-                )}
               </div>
 
               {watchType === 'mcq' && (
@@ -593,7 +595,7 @@ export default function Tests() {
         loading={loading}
         rowKey="_id"
         toolbar={
-          <select className="input-field w-48" value={filterCourse} onChange={(e) => setFilterCourse(e.target.value)}>
+          <select className="input-field w-full sm:w-48" value={filterCourse} onChange={(e) => setFilterCourse(e.target.value)}>
             <option value="">All courses</option>
             {courses.map((c) => (
               <option key={c._id} value={c._id}>
