@@ -49,6 +49,8 @@ export default function Admission() {
     trigger,
     getValues,
     setError,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -580,7 +582,10 @@ export default function Admission() {
                     <input
                       type="checkbox"
                       className="mt-0.5 h-4 w-4 rounded border-surface-border text-brand-500 focus:ring-brand-500/40"
-                      {...register('termsAccepted', { required: 'You must accept the terms to continue' })}
+                      checked={!!watch('termsAccepted')}
+                      onChange={(e) => {
+                        setValue('termsAccepted', e.target.checked, { shouldValidate: true });
+                      }}
                     />
                     <span>
                       I confirm that the information provided is accurate and I agree to the{' '}
