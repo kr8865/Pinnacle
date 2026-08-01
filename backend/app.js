@@ -43,11 +43,19 @@ const createApp = () => {
     .map((o) => o.trim())
     .filter(Boolean);
 
+  // Vercel generates a distinct URL per branch/deployment (e.g.
+  // pinnacle-git-main-<team>.vercel.app, pinnacle-<hash>-<team>.vercel.app)
+  // in addition to the stable production alias — matching them all by
+  // pattern avoids having to update CLIENT_URL for every new deployment.
+  const vercelPreviewPattern = /^https:\/\/pinnacle[\w-]*\.vercel\.app$/;
+
   app.use(
     cors({
       origin: (origin, callback) => {
         // No Origin header (curl, server-to-server, health checks) — allow.
-        if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+        if (!origin || allowedOrigins.includes(origin) || vercelPreviewPattern.test(origin)) {
+          return callback(null, true);
+        }
         return callback(new Error(`CORS: origin "${origin}" is not allowed`));
       },
       credentials: true,
