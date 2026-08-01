@@ -120,10 +120,6 @@ export default function Admission() {
   const goBack = () => setStep((s) => Math.max(s - 1, 0));
 
   const onSubmit = async (data) => {
-    if (!data.termsAccepted) {
-      setError('termsAccepted', { message: 'You must accept the terms to continue.' });
-      return;
-    }
     const filesValid = validateFilesForStep2();
     if (!filesValid) {
       toast.error('Please upload all required documents.');

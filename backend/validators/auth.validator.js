@@ -25,14 +25,9 @@ const registerValidator = [
   body('tenthPercentage').optional({ checkFalsy: true }).isFloat({ min: 0, max: 100 }).withMessage('Invalid 10th percentage'),
   body('twelfthPercentage').optional({ checkFalsy: true }).isFloat({ min: 0, max: 100 }).withMessage('Invalid 12th percentage'),
   body('medicalInfo').optional({ checkFalsy: true }).trim(),
-  body('termsAccepted')
-    .customSanitizer((v) => {
-      const val = Array.isArray(v) ? v[v.length - 1] : v;
-      if (typeof val === 'string') return val === 'true' || val === 'on' || val === '1';
-      return Boolean(val);
-    })
-    .equals(true)
-    .withMessage('Terms must be accepted'),
+  // termsAccepted is intentionally not required here — it's stored as informational
+  // consent on the Student record (see auth.controller.js#register), not gated on.
+  body('termsAccepted').optional(),
 ];
 
 const loginValidator = [
