@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { FiX } from 'react-icons/fi';
 
 function NavItems({ items, layoutId, onNavigate }) {
@@ -51,6 +51,19 @@ function NavItems({ items, layoutId, onNavigate }) {
 }
 
 export default function Sidebar({ items, brand, footer, mobileOpen, onMobileClose }) {
+  // Lock page scroll while the mobile drawer is open, and always release it
+  // on close/unmount — otherwise a stuck scroll-lock from a previous
+  // open/close cycle can leave the page in a state where touches/clicks
+  // behave inconsistently on the next open.
+  useEffect(() => {
+    if (!mobileOpen) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileOpen]);
+
   return (
     <>
       {/* Desktop floating sidebar */}
@@ -60,42 +73,44 @@ export default function Sidebar({ items, brand, footer, mobileOpen, onMobileClos
         {footer}
       </aside>
 
-      {/* Mobile drawer */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={onMobileClose}
-              className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm lg:hidden"
-            />
-            <motion.aside
-              initial={{ x: -280, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -280, opacity: 0 }}
-              transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-              className="fixed inset-y-4 left-4 right-4 z-[70] flex w-auto max-w-xs flex-col gap-6 rounded-3xl border border-surface-border bg-surface-card p-5 shadow-softLg dark:border-surface-darkBorder dark:bg-surface-darkCard sm:right-auto sm:w-64 lg:hidden"
-            >
-              <div className="flex items-center justify-between gap-2">
-                {brand}
-                <button
-                  type="button"
-                  onClick={onMobileClose}
-                  aria-label="Close menu"
-                  className="btn-ghost !h-11 !w-11 shrink-0 touch-manipulation"
-                  style={{ touchAction: 'manipulation' }}
-                >
-                  <FiX className="h-5 w-5" />
-                </button>
-              </div>
-              <NavItems items={items} layoutId="sidebar-active-pill-mobile" onNavigate={onMobileClose} />
-              {footer}
-            </motion.aside>
-          </>
-        )}
-      </AnimatePresence>
+      {/*
+        Mobile drawer — always mounted (never conditionally rendered) and
+        purely CSS-driven via `mobileOpen`. Deliberately NOT using
+        AnimatePresence's mount/unmount + exit-animation lifecycle here:
+        that pattern can get out of sync when the drawer is opened and
+        closed repeatedly in quick succession, leaving it stuck after the
+        first close. Keeping the nodes permanently in the DOM and just
+        toggling classes means every open/close is a plain, independent
+        state flip with nothing to get out of sync.
+      */}
+      <div
+        onClick={onMobileClose}
+        aria-hidden={!mobileOpen}
+        className={`fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm transition-opacity duration-200 lg:hidden ${
+          mobileOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+      />
+      <aside
+        aria-hidden={!mobileOpen}
+        className={`fixed inset-y-4 left-4 right-4 z-[70] flex w-auto max-w-xs flex-col gap-6 rounded-3xl border border-surface-border bg-surface-card p-5 shadow-softLg transition-transform duration-300 ease-out dark:border-surface-darkBorder dark:bg-surface-darkCard sm:right-auto sm:w-64 lg:hidden ${
+          mobileOpen ? 'translate-x-0 pointer-events-auto' : '-translate-x-[120%] pointer-events-none'
+        }`}
+      >
+        <div className="flex items-center justify-between gap-2">
+          {brand}
+          <button
+            type="button"
+            onClick={onMobileClose}
+            aria-label="Close menu"
+            className="btn-ghost !h-11 !w-11 shrink-0 touch-manipulation"
+            style={{ touchAction: 'manipulation' }}
+          >
+            <FiX className="h-5 w-5" />
+          </button>
+        </div>
+        <NavItems items={items} layoutId="sidebar-active-pill-mobile" onNavigate={onMobileClose} />
+        {footer}
+      </aside>
     </>
   );
 }
