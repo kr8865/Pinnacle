@@ -183,8 +183,9 @@ const login = catchAsync(async (req, res) => {
   const { email, password, remember } = req.body;
   const user = await authenticateCredentials({ email, password });
 
+  let student = null;
   if (user.role === 'student') {
-    const student = await Student.findOne({ user: user._id });
+    student = await Student.findOne({ user: user._id }).populate('course', 'name subject classLevel');
     if (!student || student.admissionStatus !== 'approved') {
       throw ApiError.forbidden(
         student && student.admissionStatus === 'pending'
@@ -203,7 +204,10 @@ const login = catchAsync(async (req, res) => {
 
   await logActivity({ user: user._id, action: 'auth:login', req });
 
-  return sendSuccess(res, { data: { accessToken, user: user.toSafeJSON() } });
+  const userData = user.toSafeJSON();
+  if (student) userData.studentProfile = student;
+
+  return sendSuccess(res, { data: { accessToken, user: userData } });
 });
 
 /** POST /auth/admin-login */
