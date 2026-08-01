@@ -35,9 +35,21 @@ const createApp = () => {
   app.set('trust proxy', 1);
 
   app.use(helmet());
+
+  // CLIENT_URL may be a single origin or a comma-separated list (e.g. local
+  // dev + a deployed frontend), so requests from any of them are allowed.
+  const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+
   app.use(
     cors({
-      origin: process.env.CLIENT_URL || 'http://localhost:5173',
+      origin: (origin, callback) => {
+        // No Origin header (curl, server-to-server, health checks) — allow.
+        if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+        return callback(new Error(`CORS: origin "${origin}" is not allowed`));
+      },
       credentials: true,
     })
   );
