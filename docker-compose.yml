@@ -10,7 +10,7 @@ services:
     # intentionally NOT overridden here, so seeded data (admin/courses/students)
     # is available immediately instead of starting from an empty local database.
     ports:
-      - "5000:5000"
+      - "5003:5003"
     volumes:
       - backend_uploads:/app/uploads
 

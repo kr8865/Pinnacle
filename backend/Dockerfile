@@ -15,7 +15,7 @@ RUN mkdir -p uploads && chown -R node:node /app
 #   docker build -f backend/Dockerfile -t pinnacle-backend .
 # (docker-compose.yml at the repo root is already configured this way)
 USER node
-EXPOSE 5000
+EXPOSE 5003
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:5000/api/v1/health', r => process.exit(r.statusCode===200?0:1)).on('error', () => process.exit(1))"
+  CMD node -e "require('http').get('http://localhost:5003/api/v1/health', r => process.exit(r.statusCode===200?0:1)).on('error', () => process.exit(1))"
 CMD ["node", "server.js"]

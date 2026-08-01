@@ -33,7 +33,7 @@ cd backend
 cp .env.example .env        # fill in Mongo URI, JWT secrets, Cloudinary/Razorpay/SMTP keys
 npm install
 npm run seed                # creates the admin user + 8 courses
-npm run dev                 # http://localhost:5000
+npm run dev                 # http://localhost:5003
 
 # 2. Frontend (new terminal)
 cd frontend
@@ -77,7 +77,7 @@ cp backend/.env.example backend/.env   # fill in real values first
 docker compose up --build
 ```
 
-This starts MongoDB, the backend API (port 5000), and Nginx serving the built frontend + reverse-proxying `/api` and `/socket.io` to the backend (port 80).
+This starts the backend API (port 5003, using your existing MongoDB Atlas connection from `backend/.env`), and Nginx serving the built frontend + reverse-proxying `/api` and `/socket.io` to the backend (port 80).
 
 ### Bare-metal / VM (Nginx + PM2)
 
@@ -90,7 +90,7 @@ pm2 save && pm2 startup
 # Frontend
 cd frontend && npm ci && npm run build
 # Copy frontend/dist/* to your Nginx web root, or point nginx.conf's `root` at it directly.
-# Use deployment/nginx/nginx.conf as your server block (adjust `upstream` to 127.0.0.1:5000).
+# Use deployment/nginx/nginx.conf as your server block (adjust `upstream` to 127.0.0.1:5003).
 ```
 
 ### Scaling notes (target: 1,000–2,000 active students)
