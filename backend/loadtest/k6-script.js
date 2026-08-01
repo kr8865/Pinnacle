@@ -32,7 +32,7 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-const BASE_URL = __ENV.BASE_URL || 'http://localhost:5003';
+const BASE_URL = 'https://pinnacle-2-ajdc.onrender.com' || 'http://localhost:5003';
 const TEST_LOGIN = __ENV.TEST_LOGIN === '1';
 const LOGIN_EMAIL = __ENV.LOGIN_EMAIL || '';
 const LOGIN_PASSWORD = __ENV.LOGIN_PASSWORD || '';
